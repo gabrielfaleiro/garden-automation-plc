@@ -1,7 +1,7 @@
 
 #include <Irrigation.h>
 
-DigitalFilter::Irrigation(int relayPin, int pumpPin){
+Irrigation::Irrigation(int relayPin, int pumpPin){
     // pin configuration
     this->_relayPin = relayPin;
     this->_pumpPin = pumpPin;
@@ -11,23 +11,23 @@ DigitalFilter::Irrigation(int relayPin, int pumpPin){
     this->_state = 0;
 }
 
-bool DigitalFilter::get_enable(){
+bool Irrigation::get_enable(){
     return this->_enable;
 }
 
-bool DigitalFilter::get_reset(){
+bool Irrigation::get_reset(){
     return this->_reset;
 }
 
-bool DigitalFilter::get_completed(){
+bool Irrigation::get_completed(){
     return this->_completed;
 }
 
-int DigitalFilter::get_state(){
+int Irrigation::get_state(){
     return this->_state;
 }
 
-void DigitalFilter::execute(bool enable, bool reset){
+void Irrigation::execute(bool enable, bool reset){
     this->_enable = enable;
     this->_reset = reset;
 
@@ -95,18 +95,18 @@ void DigitalFilter::execute(bool enable, bool reset){
 
 }
 
-void DigitalFilter::set_relay_open_operation_delay(unsigned long value){
+void Irrigation::set_relay_open_operation_delay(unsigned long value){
     this->_relayOpenOperationDelay = value;
 }
 
-void DigitalFilter::set_relay_close_operation_delay(unsigned long value){
+void Irrigation::set_relay_close_operation_delay(unsigned long value){
     this->_relayCloseOperationDelay = value;
 }
 
-void DigitalFilter::set_pumping_off_operation_delay(unsigned long value){
+void Irrigation::set_pumping_off_operation_delay(unsigned long value){
     this->_pumpingOffOperationDelay = value;
 }
 
-void DigitalFilter::set_pumping_operation_time(unsigned long value){
+void Irrigation::set_pumping_operation_time(unsigned long value){
     this->_pumpingOperationTime = value;
 }

@@ -47,7 +47,6 @@ class Irrigation{
         unsigned long _timerState2 = 0;
         unsigned long _timerState3 = 0;
         unsigned long _timerState4 = 0;
-        unsigned long _pumpingOperationTime = 0;
 
 };
 
