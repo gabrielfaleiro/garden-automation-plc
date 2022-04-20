@@ -1,14 +1,12 @@
 
 #include <DigitalSignalFilters.h>
 
-DigitalFilter::DigitalFilter(int pin, unsigned long cool_down){
+DigitalFilter::DigitalFilter(unsigned long cool_down){
     this->set_cool_down(cool_down);
-    this->set_pin(pin);
 }
 
-DigitalFilter::DigitalFilter(int pin, unsigned long cool_down, bool init_value){
+DigitalFilter::DigitalFilter(unsigned long cool_down, bool init_value){
     this->set_cool_down(cool_down);
-    this->set_pin(pin);
 
     this->force_value(init_value);
 }
@@ -26,23 +24,8 @@ unsigned long DigitalFilter::set_cool_down(unsigned long cool_down){
     return this->_cool_down;
 }
 
-int DigitalFilter::set_pin(int pin){
-    this->_pin = pin;
-    pinMode(this->_pin, INPUT);
-
-    return this->_pin;
-}
-
-int DigitalFilter::get_pin(){
-    return this->_pin;
-}
-
-bool DigitalFilter::get_raw_value(){
-    return digitalRead(this->_pin);
-}
-
-bool DigitalFilter::get_filtered_value(){
-    bool current_value = digitalRead(this->_pin);
+bool DigitalFilter::get_filtered_value(bool val){
+    bool current_value = val;
 
     // Initialisation: Get first value
     if (!this->_initialised){

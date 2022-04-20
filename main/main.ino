@@ -21,7 +21,7 @@
 //// Global variables
 unsigned long timerSolarFeedback  = now();
 unsigned long timerIrrigation     = now();
-DigitalFilter sunLight = DigitalFilter( I0_3, LIGHT_COOLDOWN, (bool) !SUN_LIGHT_IRRIGATION_TIME );
+DigitalFilter sunLight = DigitalFilter( LIGHT_COOLDOWN, (bool) !SUN_LIGHT_IRRIGATION_TIME );
 short unsigned int irrigationControl = 0;
 Irrigation irrigation1 = Irrigation(Q0_6, Q0_7);
 
@@ -49,7 +49,7 @@ void setup() {
   */
 
   // solar panel output (24V)
-  // sunLight (global): I0_3
+  pinMode(I0_3, INPUT);
   
   // 5V output. Up to 300mA
   pinMode(Q0_5, OUTPUT);
@@ -76,6 +76,7 @@ void loop() {
   bool enIrrig1   = false;  // enable
   // bool enIrrig2   = false;  // enable
   bool rst        = false;   // reset
+  bool sunVal     = false;
   
 
   // Irrigation control
@@ -83,7 +84,9 @@ void loop() {
 
     timerIrrigation = now();
 
-    if( sunLight.get_filtered_value() == (bool) SUN_LIGHT_IRRIGATION_TIME ){ 
+    sunVal = digitalRead(I0_3);
+
+    if( sunLight.get_filtered_value(sunVal) == (bool) SUN_LIGHT_IRRIGATION_TIME ){ 
       // Irrigation
       rst = false;
     }
@@ -121,8 +124,10 @@ void loop() {
   if(lapse(timerSolarFeedback) >= 1000){
     
     timerSolarFeedback = now();
+
+    sunVal = digitalRead(I0_3);
     
-    digitalWrite(Q0_8, sunLight.get_raw_value());
+    digitalWrite(Q0_8, sunVal);
     
   }
 

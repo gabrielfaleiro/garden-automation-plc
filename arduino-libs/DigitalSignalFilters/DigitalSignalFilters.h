@@ -7,17 +7,14 @@
 
 class DigitalFilter{
     public:        
-        DigitalFilter(int pin, unsigned long cool_down);
+        DigitalFilter(unsigned long cool_down);
         // Force init value if it is critial for the application 
-        DigitalFilter(int pin, unsigned long cool_down, bool init_value);
+        DigitalFilter(unsigned long cool_down, bool init_value);
         bool force_value(bool forced_value);
 
         unsigned long set_cool_down(unsigned long cool_down);
-        int set_pin(int pin);
-        int get_pin();
 
-        bool get_raw_value();
-        bool get_filtered_value();
+        bool get_filtered_value(bool val);
         
     private:
         // Update value internally. Lighter function than force_value
