@@ -49,7 +49,7 @@ bool DigitalFilter::get_filtered_value(bool val){
     return this->_filtered_value;
 }
 
-void DigitalFilter::_set_last_value(bool value){
+void DigitalFilter::_set_last_value(bool val){
     this->_last_value = value;
     this->_last_value_time = now();
 }

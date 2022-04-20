@@ -18,7 +18,7 @@ class DigitalFilter{
         
     private:
         // Update value internally. Lighter function than force_value
-        void _set_last_value(bool value);
+        void _set_last_value(bool val);
         // Time in millis to filter signal
         // That's the amount of time the signal must be without changes to 
         // propagate the value
