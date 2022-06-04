@@ -4,6 +4,10 @@
 - Datasheet: https://www.industrialshields.com/es_ES/shop/product/013002000100-modulo-digital-de-10-e-s-cpu-esp32-2196
 - Programming: https://www.industrialshields.com/es_ES/technical-features-industrial-plc-arduino-10-ios-digital-module-cpu-esp32
 
+## Arduino IDE Libraries
+- ArduinoJson 6.19.4
+- WiFi 1.2.7
+
 ## HW PLC Configuration
 
 - Inputs 5V

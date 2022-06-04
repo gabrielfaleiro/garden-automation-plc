@@ -36,3 +36,5 @@ void Process::process(){
 void Process::set_step(uint state, Step step){
     this->steps[state] = step;
 }
+
+// TODO: autoreset enable (false by default, needs manual reset)
