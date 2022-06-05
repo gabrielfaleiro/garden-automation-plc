@@ -14,6 +14,7 @@
 #include <EEPROM.h>
 #include "Process.h"
 #include "Step.h"
+#include "DigitalSignalFilters.h"
 #include "proj_pezuela.h"
 
 
@@ -102,6 +103,7 @@ ev3_timer = Timer();
 pump_timer = Timer();
 
 irrigation = Process();
+protection = Process();
 
 void turn_on_pump(){
     digitalWrite(app_data.pump_relay_pin, HIGH);
@@ -116,7 +118,9 @@ void turn_off_pump(){
 void proj_setup(){
     init_struct(&app_data);
 
+    // TODO:
     // irrigation
+    // protection
 
     return;
 }
@@ -124,11 +128,44 @@ void proj_setup(){
 // loop function
 void proj_loop(){
     // Get variables
+    static DigitalFilter emergency_stop = DigitalFilter(app_data.emergency_stop_cooldown,
+                                                        LOW); // secure by default
+        // LOW:  enabled - protection
+        // HIGH: nominal
+    static DigitalFilter tank_level = DigitalFilter(app_data.tank_level_cooldown,
+                                                    LOW); // secure by default
+        // LOW:  no water - protection
+        // HIGH: water detected - safe operation    
+    static DigitalFilter pv_panel_voltage = DigitalFilter(app_data.pv_panel_voltage_cooldown,
+                                                          HIGH); // secure by default
+        // LOW:  night - irrigation process
+        // HIGH: day
+    
+    bool emergency_stop_value = emergency_stop.get_filtered_value(digitalRead(app_data.emergency_stop_pin));
+    bool tank_level_value = tank_level.get_filtered_value(digitalRead(app_data.tank_level_pin));
+    bool pv_panel_voltage_value = pv_panel_voltage.get_filtered_value(digitalRead(app_data.pv_panel_voltage_pin));
 
+    // Process irrigation reset happens even though system is in protection mode
+    if (pv_panel_voltage_value){ // day
+        // Reset process: irrigation
+    }
 
-    // High level state machine
+    if (emergency_stop_value || !tank_level){
+        // Process: protection
+        if (emergency_stop_value){
+            // Turn on wifi and handle configuration through API
+        }
+    }
+    else{
+        // Reset process: protection
+        else{
+            if (!pv_panel_voltage_value){ // night
+                // Process: irrigation
+            }
+        }
+    }
 
-        // Processes
+    // TODO: do state machine to support manual tests
     
     return;
 }
