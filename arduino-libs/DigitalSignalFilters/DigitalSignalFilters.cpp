@@ -50,6 +50,6 @@ bool DigitalFilter::get_filtered_value(bool val){
 }
 
 void DigitalFilter::_set_last_value(bool val){
-    this->_last_value = value;
+    this->_last_value = val;
     this->_last_value_time = now();
 }

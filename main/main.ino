@@ -1,139 +1,49 @@
-// /home/<user>/Arduino/libraries
-#include <Time.h>
-#include <DigitalSignalFilters.h>
-// #include <AnalogSignalFilters.h> // TODO
-#include <Irrigation.h>
 
-// bool: (1) day, (0) night
-#define SUN_LIGHT_IRRIGATION_TIME         0
-
-// ms
-#define LIGHT_COOLDOWN              1800000
-
-#define RELAY_OPEN_OPERATION_DELAY     5000
-#define RELAY_CLOSE_OPERATION_DELAY    5000
-#define PUMPING_OFF_OPERATION_DELAY    5000
-#define PUMPING_OPERATION_TIME      1805000
-
-
-#define DEBUG
-
-//// Global variables
-unsigned long timerSolarFeedback  = now();
-unsigned long timerIrrigation     = now();
-DigitalFilter sunLight = DigitalFilter( LIGHT_COOLDOWN, (bool) !SUN_LIGHT_IRRIGATION_TIME );
-short unsigned int irrigationControl = 0;
-Irrigation irrigation1 = Irrigation(Q0_6, Q0_7);
+#include <ArduinoLog.h>
+#include "Time.h"
+#include "DigitalSignalFilters.h"
+#include "Process.h"
+#include "Step.h"
+#include "ApiFlash.h"
+#include "proj_pezuela.h"
 
 
 void setup() {
-  #ifdef DEBUG
-  //Debugging
   Serial.begin(9600);
   while(!Serial);
-  #endif
 
-  /*
-  // PINOUT (voltage configuration)
-  - I0.0 ( 5V)
-  - I0.1 ( 5V)
-  - I0.2 ( 5V)
-  - I0.3 (24V): solar panel output
-  - I0.4 (24V)
+  // Initialize with log level and log output. 
+  Log.begin(LOG_LEVEL_VERBOSE, &Serial, true);
 
-  - Q0.5 ( 5V): 5V power supply up to 300mA
-  - Q0.6 ( 5V): relay control
-  - Q0.7 ( 5V)
-  - Q0.8 (24V): feedback solar panel digital read true
-  - Q0.9 (24V)
-  */
-
-  // solar panel output (24V)
-  pinMode(I0_3, INPUT);
+  setup_apiflash();
   
-  // 5V output. Up to 300mA
-  pinMode(Q0_5, OUTPUT);
-  digitalWrite(Q0_5, HIGH);
-  
-  // Relay control
-  pinMode(Q0_6, OUTPUT);
-  digitalWrite(Q0_6, LOW);
+  proj_setup();
+  Log.verboseln("Q0_9: %d", Q0_9);
+  Log.verboseln("Q0_8: %d", Q0_8);
+  Log.verboseln("Q0_7: %d", Q0_7);
+  Log.verboseln("Q0_6: %d", Q0_6);
+  Log.verboseln("Q0_5: %d", Q0_5);
+  Log.verboseln("Q0_4: %d", Q0_4);
+  Log.verboseln("Q0_3: %d", Q0_3);
+  Log.verboseln("Q0_2: %d", Q0_2);
+  Log.verboseln("Q0_1: %d", Q0_1);
+  Log.verboseln("Q0_0: %d", Q0_0);
 
-  // Pump control
-  pinMode(Q0_7, OUTPUT);
-  digitalWrite(Q0_7, LOW);
-
-  // feedback solar panel digital read true
-  pinMode(Q0_8, OUTPUT);
-  digitalWrite(Q0_8, LOW);
-
-  timerSolarFeedback = now();
-  timerIrrigation    = now();
+  Log.verboseln("I0_9: %d", I0_9);
+  Log.verboseln("I0_8: %d", I0_8);
+  Log.verboseln("I0_7: %d", I0_7);
+  Log.verboseln("I0_6: %d", I0_6);
+  Log.verboseln("I0_5: %d", I0_5);
+  Log.verboseln("I0_4: %d", I0_4);
+  Log.verboseln("I0_3: %d", I0_3);
+  Log.verboseln("I0_2: %d", I0_2);
+  Log.verboseln("I0_1: %d", I0_1);
+  Log.verboseln("I0_0: %d", I0_0);
 }
 
 void loop() {
-  // TODO: use arrays to handle multiple relay configurations
-  bool enIrrig1   = false;  // enable
-  // bool enIrrig2   = false;  // enable
-  bool rst        = false;   // reset
-  bool sunVal     = false;
-  
+  handle_apiflash();
 
-  // Irrigation control
-  if(lapse(timerIrrigation) >= 100){
-
-    timerIrrigation = now();
-
-    sunVal = digitalRead(I0_3);
-
-    if( sunLight.get_filtered_value(sunVal) == (bool) SUN_LIGHT_IRRIGATION_TIME ){ 
-      // Irrigation
-      rst = false;
-    }
-    else{           
-      // Reseting
-      rst = true;
-      irrigationControl = 0;
-    }
-  
-    switch(irrigationControl){
-      case 0:
-        // Init
-        if ( !rst ) irrigationControl = 1;
-        break;
-      case 1:
-        enIrrig1 = true;
-        if ( irrigation1.get_completed() ) irrigationControl = 2;
-        break;
-//      case 2:
-//        // enIrrig2 = true;
-//        // if ( irrigation2.get_completed() ) irrigationControl = 3;
-//        break;
-      case 2:
-        // Waiting
-        break;
-    }
-
-    irrigation1.execute( enIrrig1, rst );
-    // irrigation2.execute( enIrrig2, rst );
-    
-  }
-  
-  
-  // Solar panel reading feedback
-  if(lapse(timerSolarFeedback) >= 1000){
-    
-    timerSolarFeedback = now();
-
-    sunVal = digitalRead(I0_3);
-    
-    digitalWrite(Q0_8, sunVal);
-    
-  }
-
-//  Serial.print(now());
-//  Serial.print(" - ");
-//  Serial.print(now(true));
-//  Serial.println();    
+  proj_loop();
   
 }

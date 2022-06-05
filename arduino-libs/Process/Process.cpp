@@ -3,12 +3,20 @@
 
 Process::Process(){
     this->state = 0;
+    this->autoreset = false;
 }
 
 void Process::_change_state(uint state){
-    // Default transition when not valid state: reset
     if (state >= PROCESS_MAX_STATES){
-        state = 0;
+        if(this->autoreset){
+            state = 0;
+            Log.verboseln("Process: autoreseted");
+        }
+        else {
+            // No state change
+            Log.verboseln("Process: no state change");
+            return;
+        }
     }
 
     this->steps[this->state].post_op();
@@ -37,4 +45,6 @@ void Process::set_step(uint state, Step step){
     this->steps[state] = step;
 }
 
-// TODO: autoreset enable (false by default, needs manual reset)
+void Process::enable_autoreset(bool en){
+    this->autoreset = en;
+}

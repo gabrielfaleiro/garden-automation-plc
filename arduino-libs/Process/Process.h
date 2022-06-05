@@ -1,5 +1,6 @@
 
 #include <Arduino.h>
+#include <ArduinoLog.h>
 #include "Step.h"
 
 #ifndef PROCESS_MAX_STATES
@@ -18,10 +19,12 @@ class Process{
         void process();
 
         void set_step(uint state, Step step);
+        void enable_autoreset(bool en);
         
     private:
         uint state;
         Step steps[PROCESS_MAX_STATES];
+        bool autoreset;
 
         void _change_state(uint state);
 
