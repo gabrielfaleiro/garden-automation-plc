@@ -48,3 +48,9 @@ void Process::set_step(uint state, Step step){
 void Process::enable_autoreset(bool en){
     this->autoreset = en;
 }
+
+bool Process::process_finished(){
+    bool ret_val = false;
+    if (this->state >= PROCESS_MAX_STATES) ret_val = true;
+    return ret_val;
+}

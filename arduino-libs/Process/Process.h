@@ -20,6 +20,8 @@ class Process{
 
         void set_step(uint state, Step step);
         void enable_autoreset(bool en);
+
+        bool process_finished();
         
     private:
         uint state;

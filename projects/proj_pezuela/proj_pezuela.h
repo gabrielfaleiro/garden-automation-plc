@@ -1,3 +1,9 @@
+#include <Arduino.h>
+#include <EEPROM.h>
+#include "Process.h"
+#include "Step.h"
+#include "DigitalSignalFilters.h"
+#include "ApiFlash.h"
 
 #ifndef _PROJECT_H
 #define _PROJECT_H
@@ -23,14 +29,14 @@ class Timer{
     public:
         Timer();
 
-        void update_timer_ref();
-        void config(unsigned long timeout);
+        void update_timer_ref(); // update timer time
+        void config(unsigned long timeout); // config timeout
         bool timeout(); // transit function
 
     private:
-        unsigned long timer;
-        unsigned long timeout;
-}
+        unsigned long _timer;   // reference
+        unsigned long _timeout; // timeout to count
+};
 
 void turn_on_pump();
 void turn_off_pump();

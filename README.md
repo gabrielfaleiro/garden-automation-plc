@@ -25,6 +25,30 @@
   - Q0.8
   - Q0.9
 
+```
+Q0_9: 13
+Q0_8: 12
+Q0_7: 14
+Q0_6: 27
+Q0_5: 26
+Q0_4: 25
+Q0_3: 32
+Q0_2: 15
+Q0_1: 2
+Q0_0: 4
+
+I0_9: 13
+I0_8: 12
+I0_7: 14
+I0_6: 27
+I0_5: 26
+I0_4: 25
+I0_3: 32
+I0_2: 15
+I0_1: 2
+I0_0: 4
+```
+
 
 ## TODO
 - Implement API: https://www.industrialshields.com/es_ES/blog/blog-industrial-open-source-1/post/servidor-http-en-un-m-duino-154
