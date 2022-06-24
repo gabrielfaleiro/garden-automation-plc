@@ -20,6 +20,11 @@ class Step{
         void set_op(void (*func)());
         void set_post_op(void (*func)());
         void set_transit(bool (*func)());
+
+        void set_pre_op();
+        void set_op();
+        void set_post_op();
+        void set_transit();
         
     private:
         void (*_func_pre_op)();

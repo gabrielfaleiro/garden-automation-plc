@@ -5,7 +5,7 @@
 #include "Process.h"
 #include "Step.h"
 #include "ApiFlash.h"
-#include "proj_pezuela.h"
+#include "proj_home_lab.h"
 
 
 void setup() {
@@ -19,15 +19,11 @@ void setup() {
   
   proj_setup();
 
-  pinMode(I0_0, INPUT);
-
 }
 
 void loop() {
   handle_apiflash();
 
-  //proj_loop();
-
-  Log.verboseln("value: %d", analogRead(I0_0));
+  proj_loop();
 
 }

@@ -41,8 +41,16 @@ void Process::process(){
     }
 }
 
-void Process::set_step(uint state, Step step){
-    this->steps[state] = step;
+Step* Process::get_step(uint state){
+    Step* ret_val;
+    if (state < PROCESS_MAX_STATES){
+        ret_val = &(this->steps[state]);
+    }
+    else {
+        ret_val = NULL;
+    }
+
+    return ret_val;
 }
 
 void Process::enable_autoreset(bool en){

@@ -26,12 +26,20 @@ void Step::set_pre_op(void (*func)()){
   this->_func_pre_op = func;
 }
 
+void Step::set_pre_op(){
+  this->_func_pre_op = _empty_void_method;
+}
+
 void Step::op(){
   return this->_func_op();
 }
 
 void Step::set_op(void (*func)()){
   this->_func_op = func;
+}
+
+void Step::set_op(){
+  this->_func_op = _empty_void_method;
 }
 
 void Step::post_op(){
@@ -42,10 +50,18 @@ void Step::set_post_op(void (*func)()){
   this->_func_post_op = func;
 }
 
+void Step::set_post_op(){
+  this->_func_post_op = _empty_void_method;
+}
+
 bool Step::transit(){
   return this->_func_transit();
 }
 
 void Step::set_transit(bool (*func)()){
   this->_func_transit = func;
+}
+
+void Step::set_transit(){
+  this->_func_transit = _empty_bool_method;
 }

@@ -18,7 +18,7 @@ class Process{
         uint get_state();
         void process();
 
-        void set_step(uint state, Step step);
+        Step* get_step(uint state);
         void enable_autoreset(bool en);
 
         bool process_finished();

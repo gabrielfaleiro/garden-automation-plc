@@ -11,7 +11,7 @@
 */
 
 
-#include "proj_pezuela.h"
+#include "proj_home_lab.h"
 
 
 // Struct containing main application data
