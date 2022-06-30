@@ -59,6 +59,6 @@ void Process::enable_autoreset(bool en){
 
 bool Process::process_finished(){
     bool ret_val = false;
-    if (this->state >= PROCESS_MAX_STATES) ret_val = true;
+    if (this->state >= (PROCESS_MAX_STATES - 1)) ret_val = true;
     return ret_val;
 }

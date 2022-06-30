@@ -1,11 +1,7 @@
 
 #include <ArduinoLog.h>
-#include "Time.h"
-#include "DigitalSignalFilters.h"
-#include "Process.h"
-#include "Step.h"
 #include "ApiFlash.h"
-#include "proj_home_lab.h"
+#include "proj_pezuela.h"
 
 
 void setup() {
@@ -25,5 +21,7 @@ void loop() {
   handle_apiflash();
 
   proj_loop();
+
+  delay(1000);
 
 }

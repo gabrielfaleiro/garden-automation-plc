@@ -195,81 +195,8 @@ void proj_setup(){
     irrigation_period_timer.update_timer_ref();
 
     Step* aux_step;
+    Step* aux_step_2;
 
-    //// process irrigation
-    // 0  - open ev1 during relay_activation_ms end with idle
-    aux_step = irrigation.get_step(0);
-    aux_step->set_pre_op(ev_update_timer_ref);
-    aux_step->set_op(ev1_opening);
-    aux_step->set_transit(ev_timeout);
-    aux_step->set_post_op(ev1_idle);
-    // 1  - turn on pump
-    aux_step = irrigation.get_step(1);
-    aux_step->set_pre_op();
-    aux_step->set_op(turn_on_pump);
-    aux_step->set_transit();
-    aux_step->set_post_op();
-    // 2  - wait during irrigation_area_ms
-    aux_step = irrigation.get_step(2);
-    aux_step->set_pre_op(irrigation_area_update_timer_ref);
-    aux_step->set_op();
-    aux_step->set_transit(irrigation_area_timeout);
-    aux_step->set_post_op();
-    // 3  - open ev2 during relay_activation_ms end with idle
-    aux_step = irrigation.get_step(3);
-    aux_step->set_pre_op(ev_update_timer_ref);
-    aux_step->set_op(ev2_opening);
-    aux_step->set_transit(ev_timeout);
-    aux_step->set_post_op(ev2_idle);
-    // 4  - close ev1 during relay_activation_ms end with idle
-    aux_step = irrigation.get_step(4);
-    aux_step->set_pre_op(ev_update_timer_ref);
-    aux_step->set_op(ev1_closing);
-    aux_step->set_transit(ev_timeout);
-    aux_step->set_post_op(ev1_idle);
-    // 5  - wait during irrigation_area_ms
-    aux_step = irrigation.get_step(5);
-    aux_step->set_pre_op(irrigation_area_update_timer_ref);
-    aux_step->set_op();
-    aux_step->set_transit(irrigation_area_timeout);
-    aux_step->set_post_op();
-    // 6  - open ev3 during relay_activation_ms end with idle
-    aux_step = irrigation.get_step(6);
-    aux_step->set_pre_op(ev_update_timer_ref);
-    aux_step->set_op(ev3_opening);
-    aux_step->set_transit(ev_timeout);
-    aux_step->set_post_op(ev3_idle);
-    // 7  - close ev2 during relay_activation_ms end with idle
-    aux_step = irrigation.get_step(7);
-    aux_step->set_pre_op(ev_update_timer_ref);
-    aux_step->set_op(ev2_closing);
-    aux_step->set_transit(ev_timeout);
-    aux_step->set_post_op(ev2_idle);
-    // 8  - wait during irrigation_area_ms
-    aux_step = irrigation.get_step(8);
-    aux_step->set_pre_op(irrigation_area_update_timer_ref);
-    aux_step->set_op();
-    aux_step->set_transit(irrigation_area_timeout);
-    aux_step->set_post_op();
-    // 9  - turn off pump
-    aux_step = irrigation.get_step(9);
-    aux_step->set_pre_op();
-    aux_step->set_op(turn_off_pump);
-    aux_step->set_transit();
-    aux_step->set_post_op();
-    // 10 - wait during pump_protection_ms
-    aux_step = irrigation.get_step(10);
-    aux_step->set_pre_op(pump_update_timer_ref);
-    aux_step->set_op();
-    aux_step->set_transit(pump_timeout);
-    aux_step->set_post_op();
-    // 11 - close ev3 during relay_activation_ms end with idle
-    aux_step = irrigation.get_step(11);
-    aux_step->set_pre_op(ev_update_timer_ref);
-    aux_step->set_op(ev3_closing);
-    aux_step->set_transit(ev_timeout);
-    aux_step->set_post_op(ev3_idle);
-    ////////////////////
 
     //// process protection
     // 0 - turn off pump
@@ -304,6 +231,106 @@ void proj_setup(){
     aux_step->set_post_op(ev3_idle);
     ////////////////////
 
+
+    //// process irrigation
+    // First section of protection for initialisation
+    // 0 - turn off pump
+    aux_step = protection.get_step(0);
+    aux_step_2 = irrigation.get_step(0);
+    aux_step_2 = aux_step;
+    // 1 - wait during pump_protection_ms
+    aux_step = protection.get_step(1);
+    aux_step_2 = irrigation.get_step(1);
+    aux_step_2 = aux_step;
+    // 2 - close ev1 during relay_activation_ms end with idle
+    aux_step = protection.get_step(2);
+    aux_step_2 = irrigation.get_step(2);
+    aux_step_2 = aux_step;
+    // 3 - close ev2 during relay_activation_ms end with idle
+    aux_step = protection.get_step(3);
+    aux_step_2 = irrigation.get_step(3);
+    aux_step_2 = aux_step;
+    // 4 - close ev3 during relay_activation_ms end with idle
+    aux_step = protection.get_step(4);
+    aux_step_2 = irrigation.get_step(4);
+    aux_step_2 = aux_step;
+
+    // 5  - open ev1 during relay_activation_ms end with idle
+    aux_step = irrigation.get_step(5);
+    aux_step->set_pre_op(ev_update_timer_ref);
+    aux_step->set_op(ev1_opening);
+    aux_step->set_transit(ev_timeout);
+    aux_step->set_post_op(ev1_idle);
+    // 6  - turn on pump
+    aux_step = irrigation.get_step(6);
+    aux_step->set_pre_op();
+    aux_step->set_op(turn_on_pump);
+    aux_step->set_transit();
+    aux_step->set_post_op()
+    // 7  - wait during irrigation_area_ms
+    aux_step = irrigation.get_step(7);
+    aux_step->set_pre_op(irrigation_area_update_timer_ref);
+    aux_step->set_op();
+    aux_step->set_transit(irrigation_area_timeout);
+    aux_step->set_post_op();
+    // 8  - open ev2 during relay_activation_ms end with idle
+    aux_step = irrigation.get_step(8);
+    aux_step->set_pre_op(ev_update_timer_ref);
+    aux_step->set_op(ev2_opening);
+    aux_step->set_transit(ev_timeout);
+    aux_step->set_post_op(ev2_idle);
+    // 9  - close ev1 during relay_activation_ms end with idle
+    aux_step = irrigation.get_step(9);
+    aux_step->set_pre_op(ev_update_timer_ref);
+    aux_step->set_op(ev1_closing);
+    aux_step->set_transit(ev_timeout);
+    aux_step->set_post_op(ev1_idle);
+    // 10 - wait during irrigation_area_ms
+    aux_step = irrigation.get_step(10);
+    aux_step->set_pre_op(irrigation_area_update_timer_ref);
+    aux_step->set_op();
+    aux_step->set_transit(irrigation_area_timeout);
+    aux_step->set_post_op();
+    // 11 - open ev3 during relay_activation_ms end with idle
+    aux_step = irrigation.get_step(11);
+    aux_step->set_pre_op(ev_update_timer_ref);
+    aux_step->set_op(ev3_opening);
+    aux_step->set_transit(ev_timeout);
+    aux_step->set_post_op(ev3_idle);
+    // 12 - close ev2 during relay_activation_ms end with idle
+    aux_step = irrigation.get_step(12);
+    aux_step->set_pre_op(ev_update_timer_ref);
+    aux_step->set_op(ev2_closing);
+    aux_step->set_transit(ev_timeout);
+    aux_step->set_post_op(ev2_idle);
+    // 13 - wait during irrigation_area_ms
+    aux_step = irrigation.get_step(13);
+    aux_step->set_pre_op(irrigation_area_update_timer_ref);
+    aux_step->set_op();
+    aux_step->set_transit(irrigation_area_timeout);
+    aux_step->set_post_op();
+    // 14 - turn off pump
+    aux_step = irrigation.get_step(14);
+    aux_step->set_pre_op();
+    aux_step->set_op(turn_off_pump);
+    aux_step->set_transit();
+    aux_step->set_post_op();
+    // 15 - wait during pump_protection_ms
+    aux_step = irrigation.get_step(15);
+    aux_step->set_pre_op(pump_update_timer_ref);
+    aux_step->set_op();
+    aux_step->set_transit(pump_timeout);
+    aux_step->set_post_op();
+    // 16 - close ev3 during relay_activation_ms end with idle
+    aux_step = irrigation.get_step(16);
+    aux_step->set_pre_op(ev_update_timer_ref);
+    aux_step->set_op(ev3_closing);
+    aux_step->set_transit(ev_timeout);
+    aux_step->set_post_op(ev3_idle);
+    ////////////////////
+
+    
+
     return;
 }
 
@@ -331,11 +358,8 @@ void proj_loop(){
 
     bool en_wifi_value = false;
 
-
-    irrigation.process_finished();
-
     // clock based control
-    if(irrigation_period_timer.timeout()){
+    if(irrigation_period_timer.timeout() && irrigation_completed){
         irrigation_period_timer.config(app_data.irrigation_period_ms);
         irrigation_period_timer.update_timer_ref();
         irrigation.reset();
