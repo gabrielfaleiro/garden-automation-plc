@@ -4,6 +4,8 @@
 #include "Step.h"
 #include "DigitalSignalFilters.h"
 #include "ApiFlash.h"
+#include "Actions.h"
+#include "SerialCommands.h"
 
 #ifndef _PROJECT_H
 #define _PROJECT_H
@@ -23,19 +25,6 @@ class EvHandler{
     private:
         int pin_open;
         int pin_close; 
-};
-
-class Timer{
-    public:
-        Timer();
-
-        void update_timer_ref(); // update timer time
-        void config(unsigned long timeout); // config timeout
-        bool timeout(); // transit function
-
-    private:
-        unsigned long _timer;   // reference
-        unsigned long _timeout; // timeout to count
 };
 
 // Pump
@@ -59,7 +48,7 @@ void ev2_closing();
 void ev3_closing();
 void ev1_idle();
 void ev2_idle();
-void ev3_idle();
+void c();
 
 void proj_setup();
 void proj_loop();

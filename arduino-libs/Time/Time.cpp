@@ -24,3 +24,22 @@ unsigned long lapse(unsigned long old_now, bool micros_value){
   
   return lapse;
 }
+
+Timer::Timer(){
+    this->_timer = 0;
+    this->_timeout = 0;
+}
+
+void Timer::update_timer_ref(){
+    this->_timer = now();
+}
+
+void Timer::config(unsigned long timeout){
+    this->_timeout = timeout;
+}
+
+bool Timer::timeout(){
+    bool ret_val = false;
+    if (lapse(this->_timer) > this->_timeout) ret_val = true;
+    return ret_val;
+}

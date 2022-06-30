@@ -16,14 +16,14 @@
 
 // Struct containing main application data
 struct app_data_struct {
-    // outputs
-    int ev1_relay_pin_a      = Q0_9;
-    int ev1_relay_pin_b      = Q0_8;
-    int ev2_relay_pin_a      = Q0_7;
-    int ev2_relay_pin_b      = Q0_6;
-    int ev3_relay_pin_a      = Q0_5;
-    int ev3_relay_pin_b      = Q0_4;
-    int pump_relay_pin       = Q0_3;
+    // outputs                       // relays
+    int ev1_relay_pin_a      = Q0_9; // K1
+    int ev1_relay_pin_b      = Q0_8; // K2
+    int ev2_relay_pin_a      = Q0_7; // K3
+    int ev2_relay_pin_b      = Q0_6; // K4
+    int ev3_relay_pin_a      = Q0_5; // K5
+    int ev3_relay_pin_b      = Q0_4; // K6
+    int pump_relay_pin       = Q0_3; // K7
     // inputs
     int tank_level_pin       = I0_2; // HIGH with water
     int emergency_stop_pin   = I0_1; // HIGH on not activated
@@ -36,7 +36,7 @@ struct app_data_struct {
         
     // operation times      
     unsigned long relay_activation_ms               = 5000;
-    unsigned long irrigation_area_ms                = 20*60*1000;
+    unsigned long irrigation_area_ms                = 60*1000; // 20*60*1000;
     unsigned long pump_protection_ms                = 10000;
         
     unsigned long irrigation_period_ms              = 24*60*60*1000;
@@ -55,6 +55,9 @@ Timer irrigation_period_timer   = Timer();
 
 Process irrigation = Process();
 Process protection = Process();
+
+Actions proj_actions = Actions();
+SerialCommands serial_commands = SerialCommands(&proj_actions);
 
 EvHandler::EvHandler(){
     this->pin_open  = 0;
@@ -79,25 +82,6 @@ void EvHandler::closing(){
 void EvHandler::idle(){
     digitalWrite(this->pin_open, LOW);
     digitalWrite(this->pin_close, LOW);
-}
-
-Timer::Timer(){
-    this->_timer = 0;
-    this->_timeout = 0;
-}
-
-void Timer::update_timer_ref(){
-    this->_timer = now();
-}
-
-void Timer::config(unsigned long timeout){
-    this->_timeout = timeout;
-}
-
-bool Timer::timeout(){
-    bool ret_val = false;
-    if (lapse(this->_timer) > this->_timeout) ret_val = true;
-    return ret_val;
 }
 
 void init_struct(app_data_struct* app_data){
@@ -176,7 +160,16 @@ void proj_setup(){
     pinMode(app_data.ev2_relay_pin_b, OUTPUT);
     pinMode(app_data.ev3_relay_pin_a, OUTPUT);
     pinMode(app_data.ev3_relay_pin_b, OUTPUT);
-    pinMode(app_data.pump_relay_pin, OUTPUT);
+    pinMode(app_data.pump_relay_pin,  OUTPUT);
+
+    digitalWrite(app_data.ev1_relay_pin_a, LOW);
+    digitalWrite(app_data.ev1_relay_pin_b, LOW);
+    digitalWrite(app_data.ev2_relay_pin_a, LOW);
+    digitalWrite(app_data.ev2_relay_pin_b, LOW);
+    digitalWrite(app_data.ev3_relay_pin_a, LOW);
+    digitalWrite(app_data.ev3_relay_pin_b, LOW);
+    digitalWrite(app_data.pump_relay_pin,  LOW);
+
 
     pinMode(app_data.tank_level_pin, INPUT);
     pinMode(app_data.emergency_stop_pin, INPUT);
@@ -194,9 +187,20 @@ void proj_setup(){
 
     irrigation_period_timer.update_timer_ref();
 
+    proj_actions.add_action("turn_on_pump", turn_on_pump);
+    proj_actions.add_action("turn_off_pump", turn_off_pump);
+    proj_actions.add_action("ev1_opening", ev1_opening);
+    proj_actions.add_action("ev2_opening", ev2_opening);
+    proj_actions.add_action("ev3_opening", ev3_opening);
+    proj_actions.add_action("ev1_closing", ev1_closing);
+    proj_actions.add_action("ev2_closing", ev2_closing);
+    proj_actions.add_action("ev3_closing", ev3_closing);
+    proj_actions.add_action("ev1_idle", ev1_idle);
+    proj_actions.add_action("ev2_idle", ev2_idle);
+    proj_actions.add_action("ev2_idle", ev2_idle);
+
     Step* aux_step;
     Step* aux_step_2;
-
 
     //// process protection
     // 0 - turn off pump
@@ -266,7 +270,7 @@ void proj_setup(){
     aux_step->set_pre_op();
     aux_step->set_op(turn_on_pump);
     aux_step->set_transit();
-    aux_step->set_post_op()
+    aux_step->set_post_op();
     // 7  - wait during irrigation_area_ms
     aux_step = irrigation.get_step(7);
     aux_step->set_pre_op(irrigation_area_update_timer_ref);
@@ -329,8 +333,6 @@ void proj_setup(){
     aux_step->set_post_op(ev3_idle);
     ////////////////////
 
-    
-
     return;
 }
 
@@ -356,6 +358,9 @@ void proj_loop(){
     bool tank_level_value = tank_level.get_filtered_value(digitalRead(app_data.tank_level_pin));
     bool pv_panel_voltage_value = pv_panel_voltage.get_filtered_value(digitalRead(app_data.pv_panel_voltage_pin));
 
+    Log.verboseln("emergency_stop_value: %T", emergency_stop_value);
+    Log.verboseln("tank_level_value: %T", tank_level_value);
+
     bool en_wifi_value = false;
 
     // clock based control
@@ -379,6 +384,7 @@ void proj_loop(){
         if (emergency_stop_value){
             // Turn on wifi and handle configuration through API
             en_wifi_value = true;
+            serial_commands.handle_serial();
         }
     }
     else{
