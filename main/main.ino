@@ -1,7 +1,6 @@
 
 #include <ArduinoLog.h>
-#include "ApiFlash.h"
-#include "proj_home_lab.h"
+#include "proj_pezuela.h"
 
 
 void setup() {
@@ -10,18 +9,15 @@ void setup() {
 
   // Initialize with log level and log output. 
   Log.begin(LOG_LEVEL_VERBOSE, &Serial, true);
-
-  setup_apiflash();
   
   proj_setup();
 
 }
 
 void loop() {
-  handle_apiflash();
 
   proj_loop();
 
-  delay(1000);
+  delay (1000);
 
 }

@@ -3,7 +3,8 @@
 #include "Process.h"
 #include "Step.h"
 #include "DigitalSignalFilters.h"
-#include "ApiFlash.h"
+#include "Api.h"
+#include "Flash.h"
 #include "Actions.h"
 #include "SerialCommands.h"
 
